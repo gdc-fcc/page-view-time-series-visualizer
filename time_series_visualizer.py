@@ -42,12 +42,14 @@ def draw_bar_plot():
     width = 1/13
     multiplier = -5.5
     x = np.arange(len(df_bar['year'].unique()))
+    df_bar3 = df_bar.groupby(['month', 'year'], as_index=False).agg({'value': 'mean'})
+
 
     #um = df_bar['month'].unique()
     um = ['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
     for i in range(len(um)):
         month = um[i]
-        df_bar2 = df_bar.loc[df_bar['month'] == month]
+        df_bar2 = df_bar3.loc[df_bar3['month'] == month]
         offset = width * multiplier
         rects = ax.bar(df_bar2['year'] + offset, df_bar2['value'], width, label=month)
         multiplier += 1

@@ -36,25 +36,12 @@ def draw_bar_plot():
     df_bar = df.copy()
     df_bar['year'] = [d.year for d in df_bar.date]
     df_bar['month'] = [d.strftime('%B') for d in df_bar.date]
+    df_bar['new'] = [d.strftime('%m') for d in df_bar.date]
 
-    # Draw bar plot
-    fig, ax = plt.subplots()
-    width = 1/13
-    multiplier = -5.5
-    x = np.arange(len(df_bar['year'].unique()))
-    df_bar3 = df_bar.groupby(['month', 'year'], as_index=False).agg({'value': 'mean'})
-
-
-    #um = df_bar['month'].unique()
-    um = ['January','February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    for i in range(len(um)):
-        month = um[i]
-        df_bar2 = df_bar3.loc[df_bar3['month'] == month]
-        offset = width * multiplier
-        rects = ax.bar(df_bar2['year'] + offset, df_bar2['value'], width, label=month)
-        multiplier += 1
-
-    plt.xticks([2016, 2017, 2018, 2019])
+    fig, ax = plt.subplots(figsize=(10, 10))
+    df_bar3 = df_bar.groupby(['month', 'year', 'new'], as_index=False).agg({'value': 'mean'})
+    df_bar3=df_bar3.sort_values('new')
+    sns.barplot(data = df_bar3, x = 'year', y = 'value', hue = 'month')
     ax.legend(loc='upper left', title='Months')
     ax.set_xlabel('Years')
     ax.set_ylabel('Average Page Views')
